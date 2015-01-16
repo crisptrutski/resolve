@@ -48,7 +48,7 @@
   (if (contains? @registry service-name)
     (let [v-strings (versions-for service-name)
           versions (map v/expand-version v-strings)
-          braw (match versions version-pattern)
+          braw (v/match versions version-pattern)
           base (if braw (v/expand-version braw))
           keys (filter #(= base (v/expand-version %)) v-strings)
           ends (mapcat #(get-in @registry [service-name %]) keys)]
