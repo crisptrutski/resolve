@@ -1,6 +1,9 @@
-(ns bss.resolve)
+(ns bss.resolve
+  (:gen-class)
+  (:require [com.stuartsierra.component :as component]
+            [bss.resolve.core :as app]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn -main [& args]
+  (let [[host port] args]
+    (component/start
+      (app/system {:host host :port port}))))
