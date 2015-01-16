@@ -9,7 +9,9 @@
                  [com.taoensso/carmine "2.9.0"]
                  [compojure "1.3.1"]
                  [bss/rampant "0.1.0-SNAPSHOT"]
-                 [ring "1.3.2"]]
+                 [ring "1.3.2"]
+                 [fogus/ring-edn "0.2.0"]
+                 [tailrecursion/ring-proxy "2.0.0-SNAPSHOT"]]
 
   :plugins [[lein-environ "1.0.0"]]
 
@@ -18,10 +20,10 @@
   :uberjar-name "resolve.jar"
 
   :profiles {:dev {:repl-options {:init-ns bss.resolve.core}
-                   :env {:is-dev true}}}
+                   :env {:is-dev true}}
 
              :prod {:jvm-opts ["-Xmx1g" "-server"] }
 
              :uberjar {:env {:production true}
                        :omit-source true
-                       :aot :all})
+                       :aot :all}})
