@@ -5,30 +5,37 @@
             [compojure.handler :refer [api]]
             [compojure.route :refer [resources]]))
 
+(defn ->edn [data & [status]]
+  {:status (or status 200)
+   :headers {"Content-Type" "application/edn"}
+   :body (pr-str data)})
+
 (defroutes routes
 
   (PUT "/registry/:service-name" {:keys [params] :as req}
-    (let [service-name (get-in params [:route-params :service-name])
+    (let [service-name (get-in req [:route-params :service-name])
           {:keys [version host port]} params]
       (assert (every? identity [service-name version host port]))
-      ;; TODO: nice-to-have: return whether is was registered already or not
-      (registry/register service-name version host port)
-      {:body (pr-str {:success true})}))
+      (let [exists? (registry/exists? service-name version host port)]
+        (when-not exists?
+          (registry/register service-name version host port))
+        {->edn {:success true, :existed exists?}})))
 
   (DELETE "/registry/:service-name" {:keys [params]}
     (let [{:keys [version host port service-name]} params]
       (assert (every? identity [version host port]))
-      ;; TODO: see above nice-to-have
-      (registry/unregister service-name version host port)
-      {:body (pr-str {:success true})}))
+      (let [exists? (registry/exists? service-name version host port)]
+        (when exists?
+          (registry/unregister service-name version host port))
+        {->edn {:success true, :existed exists?}})))
 
   (GET "/registry/:service-name/versions" [service-name]
-    {:body (pr-str {:service-name service-name
-                    :versions (vec (sort (registry/versions-for service-name)))})})
+    (->edn {:service-name service-name
+            :versions (vec (sort (registry/versions-for service-name)))}))
 
   (GET "/lookup/:service-name/:version" [service-name version]
-    {:body (pr-str {:service-name service-name
-                    :end-points (vec (registry/lookup service-name version))})})
+    {->edn {:service-name service-name
+            :end-points (vec (registry/lookup service-name version))}})
 
   ;; Prefixed route params to separate easily from proxied params
   (ANY "/proxy/:_service-name/:_version/*" req

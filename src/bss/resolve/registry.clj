@@ -17,11 +17,17 @@
   ([service-name version]
    (contains? (get @registry service-name) version))
   ([service-name version host]
-   (some (comp #{host} :host)
-         (get-in @registry [service-name (v/normalize version)])))
+   (boolean
+    (some (comp #{host} :host)
+          (get-in @registry [service-name (v/normalize version)]))))
   ([service-name version host port]
-   (some #{(create-endpoint host port)}
-         (get-in @registry [service-name (v/normalize version)]))))
+   (boolean
+    (some #{(create-endpoint host port)}
+          (get-in @registry [service-name (v/normalize version)])))))
+
+;; TODO: should probably throw an error if registering an endpoint that already
+;;       exists as another service and/or mapping
+;;       (OR silently remove the other mapping)
 
 ;; gracefully handle already-existing (no-op)
 (defn register
