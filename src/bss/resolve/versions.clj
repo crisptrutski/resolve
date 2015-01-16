@@ -44,7 +44,7 @@
       (let [min (expand-version (.substring version 1))
             max (bump-expanded min)
             top (last (sort (filter (fn [v]
-                                      (and (pos? (compare v min))
+                                      (and (>= (compare v min) 0)
                                            (neg? (compare v max))))
                                     versions)))]
         (if top (print-version top)))

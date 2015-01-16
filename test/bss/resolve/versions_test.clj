@@ -30,6 +30,8 @@
 
 (match versions "^3.1.2")
 
+;; TODO: fix to work with snapshots (gets things backwards - "" should be > others)
+
 (deftest match-test
   (testing "use precise version if it exists"
     (is (= "2.3.1"
@@ -40,9 +42,9 @@
   (testing "uses latest version if none supplied"
     (is (= "4.3.2"
            (match versions))))
-  (testing "semantic versions match the greatest"
+  (testing "caret range does not escape leftmost non-zero"
     (is (= "3.2.1"
            (match versions "^3.1.2"))))
-  (testing "semantic versions match the greatest"
-    (is (= nil
-           (match versions "^3.2.2")))))
+  (testing "caret range enforces minimum"
+    (is (= "3.2.1" (match versions "^3.2.1")))
+    (is (= nil (match versions "^3.2.2")))))

@@ -5,6 +5,10 @@
 (defn setup []
   (reset! registry {}))
 
+;; TODO: not sure what behaviour should be when adding SNAPSHOT
+;; (maybe remove other snapshots with same [maj min patch])?
+;; or just remove with same SNAPSHOT, and maintain precedence of snapshot strings
+
 (deftest lifecycle-test
   (testing "It registers and unregisters correctly"
     (setup)
@@ -51,3 +55,30 @@
     (register "b" "1.1.0" "cluster1" 8082)
     (is (= #{"0.0.1" "0.1.0"} (versions-for "a")))
     (is (= #{"1.0.1" "1.0.2" "1.1.0"} (versions-for "b")))))
+
+(deftest lookup-test
+  (testing "serves appropriate endpoint"
+    (setup)
+    (register "a" "0.0.1" "cluster1" 8080)
+    (register "a" "0.0.2" "cluster2" 8080)
+    (register "a" "0.1.1" "cluster1" 8081)
+    (register "a" "0.1.1" "cluster1" 8082)
+    (register "a" "0.2.3" "cluster2" 8081)
+    (register "a" "2.1.0" "cluster1" 8083)
+    (is #{} (lookup "b"))
+    (is #{} (lookup "b" "0.0.1"))
+    (is #{(create-endpoint "cluster1" 8083)}
+        (lookup "a"))
+    (is #{(create-endpoint "cluster1" 8080)}
+        (lookup "a" "0.0.1"))
+    (is #{(create-endpoint "cluster1" 8080)}
+        (lookup "a" "^0.0.1"))
+    (is #{(create-endpoint "cluster2" 8080)}
+        (lookup "a" "0.0.2"))
+    (is #{(create-endpoint "cluster1" 8081)
+          (create-endpoint "cluster1" 8082)}
+        (lookup "a" "0.1.1"))
+    (is #{(create-endpoint "cluster2" 8081)}
+        (lookup "a" "^0.1.0"))
+    (is #{}
+        (lookup "a" "^0.3.0"))))
