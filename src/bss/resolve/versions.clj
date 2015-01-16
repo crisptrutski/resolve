@@ -21,15 +21,36 @@
 
 (def normalize (comp print-version expand-version))
 
+(defn bump-expanded [[maj min patch pre :as expanded]]
+  (cond (not (empty? pre))
+        [maj min patch ""]
+
+        (> maj 0)
+        [(inc maj) 0 0 ""]
+
+        (> min 0)
+        [0 (inc min) 0 ""]
+
+        :else
+        [0 0 (inc patch) ""]))
+
+(def bump (comp print-version bump-expanded expand-version))
+
 (defn match [versions & [version]]
+  ;; TODO: rather assert versions are sorted, and skip sort and last
   (if version
-    (if (re-find #"^ " version)
-      ;; semantic upgrade
-      :todo
+    (if (re-find #"^\^" version)
+      ;; semantic upgrade, aka caret range
+      (let [min (expand-version (.substring version 1))
+            max (bump-expanded min)
+            top (last (sort (filter (fn [v]
+                                      (and (pos? (compare v min))
+                                           (neg? (compare v max))))
+                                    versions)))]
+        (if top (print-version top)))
       ;; exact
       (let [v (first (filter #{(expand-version version)} versions))]
         (if v (print-version v))))
     ;; use latest
-    ;; TODO: higher up just ensure always sorted
     (if-let [max (last (sort versions))]
       (print-version max))))
