@@ -4,6 +4,8 @@
 ;; crude storage
 ;; {name => {version => #{ {host port}, ... }}}
 
+;; TODO: move registry atom into component state
+
 (defonce registry (atom {}))
 
 (defn create-endpoint [host port]
