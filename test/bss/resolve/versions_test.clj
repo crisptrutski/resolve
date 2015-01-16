@@ -13,6 +13,8 @@
     (is (= [3 0 0 ""]
            (expand-version "3")))))
 
+(compare (expand-version "3.2.1-SNAP") (expand-version "3.2.1"))
+
 (deftest bump-test
   (testing "basic examples"
     (is (= "0.0.1" (bump "0.0.1-alpha3")))
@@ -25,12 +27,13 @@
   (map expand-version ["1.2.3"
                        "3.2.1"
                        "4.3.2"
+                       "3.1.3-SNAPSHOT"
+                       "4.3.2-SNAPSHOT"
+                       "3.1.2-SNAPSHOT"
                        "3.1.2"
                        "2.3.1"]))
 
 (match versions "^3.1.2")
-
-;; TODO: fix to work with snapshots (gets things backwards - "" should be > others)
 
 (deftest match-test
   (testing "use precise version if it exists"

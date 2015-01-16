@@ -6,8 +6,14 @@
   (reset! registry {}))
 
 ;; TODO: not sure what behaviour should be when adding SNAPSHOT
-;; (maybe remove other snapshots with same [maj min patch])?
-;; or just remove with same SNAPSHOT, and maintain precedence of snapshot strings
+;;      (maybe remove other snapshots with same [maj min patch])?
+;;      or just remove with same SNAPSHOT, and maintain precedence of
+;;      snapshot strings
+
+;; TODO: should probably throw an error if registering an endpoint that already
+;;       exists as another service and/or mapping
+;;       (OR silently remove the other mapping)
+
 
 (deftest lifecycle-test
   (testing "It registers and unregisters correctly"
@@ -33,14 +39,15 @@
       (apply unregister args)
       (is (not (apply exists? args))))))
 
-;; TODO: SHOULD SUPPORT VERSION WILDCARDS
 (deftest exists?-test
   (testing "non-precise matches"
     (setup)
     (register "a" "0.0.1" "cluster1" 8081)
+    (register "a" "3.2.1" "cluster1" 8081)
     (is (exists? "a"))
     (is (not (exists? "b")))
     (is (exists? "a" "0.0.1"))
+    (is (exists? "a" "^3.1.9"))
     (is (not (exists? "a" "0.0.2")))
     (is (exists? "a" "0.0.1" "cluster1"))
     (is (not (exists? "a" "0.0.1" "cluster2")))))

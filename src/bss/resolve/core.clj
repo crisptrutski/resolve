@@ -1,11 +1,8 @@
 (ns bss.resolve.core
   (:require [com.stuartsierra.component :as component]
             [bss.resolve.web :as web]
-            #_[environ.core :refer [env]]
+            [environ.core :refer [env]]
             [ring.adapter.jetty :refer [run-jetty]]))
-
-;; TODO: bring in environ
-(def env {})
 
 (comment
   (defrecord Database [host port connection]

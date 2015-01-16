@@ -13,9 +13,8 @@
   "Determines whether there are any matches, with match-all for missing params"
   ([service-name]
    (contains? @registry service-name))
-  ;; TODO: this should allow caret and wildcard ranges
   ([service-name version]
-   (contains? (get @registry service-name) version))
+   (v/match (map v/expand-version (keys (get @registry service-name))) version))
   ([service-name version host]
    (boolean
     (some (comp #{host} :host)
@@ -24,10 +23,6 @@
    (boolean
     (some #{(create-endpoint host port)}
           (get-in @registry [service-name (v/normalize version)])))))
-
-;; TODO: should probably throw an error if registering an endpoint that already
-;;       exists as another service and/or mapping
-;;       (OR silently remove the other mapping)
 
 ;; gracefully handle already-existing (no-op)
 (defn register
