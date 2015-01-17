@@ -54,7 +54,9 @@
              ;;       endpoint eg. round robin, sticky shuffle, or even random
              endpoint (last endpoints)
              {:keys [host port]} endpoint]
-         (proxy/proxy-request req host port))))))
+         (proxy/proxy-request req host port)))
+
+     (ANY "*" req (clojure.pprint/pprint req)))))
 
 (defn create-handler [registry]
   (-> (create-routes registry)
