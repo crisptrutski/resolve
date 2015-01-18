@@ -67,7 +67,7 @@
 
 (defn match [versions & [version]]
   (if version
-    (if (re-find #"^\^" version)
+    (if (re-find #"^(\^|_)" version)
       ;; semantic upgrade, aka caret range
       (let [min (expand-version (.substring version 1))
             max (bump-expanded min)

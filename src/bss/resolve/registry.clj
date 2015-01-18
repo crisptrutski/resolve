@@ -64,9 +64,11 @@
 (defn unregister
   "Reverse `register`"
   [{:keys [cache]} service-name version host port]
-  (swap! cache update-in
-         [service-name (v/normalize version)]
-         #(disj % (create-endpoint host port))))
+  (let [path [service-name (v/normalize version)]]
+    (swap! cache update-in path
+           #(disj % (create-endpoint host port)))
+    (if (empty? (get-in cache path))
+      (swap! cache update-in (take 1 path) #(dissoc % (last path))))))
 
 (defn- versions-for*
   "Determines set of versions available for given service-name"
