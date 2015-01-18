@@ -27,7 +27,7 @@
   (let [{:keys [port]} config-options]
     (component/system-map
      :web (component/using (new-webserver port) [:registry])
-     :registry (registry/map->Registry {}))))
+     :registry (registry/map->RedisRegistry {:spec nil}))))
 
 
 (defn run [& [port]]
