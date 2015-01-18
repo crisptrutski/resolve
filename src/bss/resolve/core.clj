@@ -16,12 +16,12 @@
       (assoc component :server server)))
 
   (stop [component]
-    (print "Stopping web server on port" port "\n")
-    (.stop server)
+    (print "Stopping web server on (port" port "\n")
+    (when server (.stop server))
     (assoc component :server nil)))
 
 (defn new-webserver [port]
-  (map->Webserver {:port (Integer. (or port (env :port) 10555))}))
+  (map->Webserver {:port (Integer. (or port (env :port) 10557))}))
 
 (defn resolve-system [config-options]
   (let [{:keys [port]} config-options]
