@@ -10,7 +10,7 @@ Basic service registry and dynamic proxy, loosely inspired by https://github.com
 
 ## TODO
 
-See issues
+[See issues](https://github.com/organosoft/resolve/issues)
 
 ## Usage
 
