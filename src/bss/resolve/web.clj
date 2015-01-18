@@ -46,22 +46,14 @@
        (->edn {:service-name service-name
                :end-points (vec (lookup service-name version))}))
 
-     ;; Prefixed route params to separate easily from proxied params
-     (ANY "/proxy/:_service-name/:_version/*" req
-       (let [{service-name :_service-name, version :_version} (:route-params req)
-             endpoints (lookup service-name version)
-             ;; TODO: should have a more advanced strategy for choosing the
-             ;;       endpoint eg. round robin, sticky shuffle, or even random
-             endpoint (last endpoints)
-             {:keys [host port]} endpoint]
-         (proxy/proxy-request req host port)))
-
      (ANY "*" req (clojure.pprint/pprint req)))))
 
 (defn create-handler [registry]
   (-> (create-routes registry)
       api
+      (proxy/wrap-dynamic-proxy registry "/proxy")
       wrap-edn-params))
 
 ;; reload trick
-;; (bss.resolve.core/run)
+(if-let [reload (resolve 'bss.resolve.core/run)]
+  (reload))
