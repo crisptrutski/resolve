@@ -1,7 +1,6 @@
 (ns bss.resolve.registry
   (:require [bss.resolve.versions :as v]
-            [taoensso.carmine :as r]
-            [clojure.string :as str]
+            [bss.resolve.redis-registry :as rr]
             [com.stuartsierra.component :as component]))
 
 (defrecord Registry [cache]
@@ -9,24 +8,6 @@
   (start [component]
     ;; crude storage: {name => {version => #{ {host port}, ... }}}
     (assoc component :cache (or cache (atom {}))))
-  (stop [component]))
-
-(defn- read-redis [spec]
-  (r/wcar spec (r/get "registry")))
-
-(defn- write-redis! [spec data]
-  (r/wcar spec (r/set "registry" data)))
-
-(defn- create-redis-atom [spec]
-  ;; note, this only reads on init, so unsafe for more than one peer
-  (let [a (atom (read-redis spec))]
-    (add-watch a :sync (fn [_ _ _ new] (write-redis! spec new)))
-    a))
-
-(defrecord RedisRegistry [spec]
-  component/Lifecycle
-  (start [component]
-    (assoc component :cache (create-redis-atom spec)))
   (stop [component]))
 
 (defn create-endpoint [host port]

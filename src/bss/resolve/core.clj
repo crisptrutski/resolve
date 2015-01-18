@@ -1,7 +1,8 @@
 (ns bss.resolve.core
-  (:require [com.stuartsierra.component :as component]
+  (:require [bss.resolve.registry :as registry]
+            [bss.resolve.redis-registry :as rr]
             [bss.resolve.web :as web]
-            [bss.resolve.registry :as registry]
+            [com.stuartsierra.component :as component]
             [environ.core :refer [env]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
@@ -36,7 +37,7 @@
     (component/system-map
      :web (component/using (new-webserver port) [:ring-app])
      :ring-app (component/using (map->RingApp {}) [:registry])
-     :registry (registry/map->RedisRegistry {:spec spec}))))
+     :registry (rr/map->RedisRegistry {:spec spec}))))
 
 
 (defn run [& [port spec]]
