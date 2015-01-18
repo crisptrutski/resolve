@@ -1,7 +1,7 @@
 (ns bss.resolve
   (:gen-class)
-  (:require [com.stuartsierra.component :as component]
-            [bss.resolve.core :as app]))
+  (:require [bss.resolve.core :as app]
+            [com.stuartsierra.component :as component]))
 
 (defn -main [& args]
   (let [[host port] args]

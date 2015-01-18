@@ -1,9 +1,8 @@
 (ns bss.resolve.web
   (:require [bss.resolve.proxy :as proxy]
             [bss.resolve.registry :as registry]
-            [compojure.core :refer [POST DELETE PUT GET ANY routes]]
+            [compojure.core :refer [DELETE PUT GET ANY routes]]
             [compojure.handler :refer [api]]
-            [compojure.route :refer [resources]]
             [ring.middleware.edn :refer [wrap-edn-params]]))
 
 ;; TODO: speak JSON on demand

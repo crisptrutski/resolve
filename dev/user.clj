@@ -1,7 +1,7 @@
 (ns user
-  (:require [com.stuartsierra.component :as component]
-            [clojure.tools.namespace.repl :refer (refresh)]
-            [bss.resolve.core :as app]))
+  (:require [bss.resolve.core :as app]
+            [clojure.tools.namespace.repl :refer [refresh]]
+            [com.stuartsierra.component :as component]))
 
 (def system nil)
 

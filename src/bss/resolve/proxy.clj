@@ -1,8 +1,8 @@
 (ns bss.resolve.proxy
   (:require [bss.resolve.registry :as registry]
+            [clj-http.client :refer [request]]
             [clojure.string :as str]
             [ring.middleware.cookies :refer [wrap-cookies]]
-            [clj-http.client         :refer [request]]
             [tailrecursion.ring-proxy :refer [prepare-cookies slurp-binary]])
   (:import (java.net URI)))
 

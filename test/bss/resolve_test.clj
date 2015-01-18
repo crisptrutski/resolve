@@ -1,9 +1,9 @@
 (ns bss.resolve-test
-  (:require [clojure.test :refer :all]
+  (:require [bss.resolve.core :refer :all]
             [clojure.edn :as edn]
-            [bss.resolve.core :refer :all]
-            [taoensso.carmine :as r]
-            [peridot.core :refer :all]))
+            [clojure.test :refer :all]
+            [peridot.core :refer :all]
+            [taoensso.carmine :as r]))
 
 ;; integration suite
 
