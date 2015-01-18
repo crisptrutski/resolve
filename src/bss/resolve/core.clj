@@ -32,16 +32,16 @@
   (map->Webserver {:port (Integer. (or port (env :port) 10557))}))
 
 (defn resolve-system [config-options]
-  (let [{:keys [port]} config-options]
+  (let [{:keys [port spec]} config-options]
     (component/system-map
      :web (component/using (new-webserver port) [:ring-app])
      :ring-app (component/using (map->RingApp {}) [:registry])
-     :registry (registry/map->RedisRegistry {:spec nil}))))
+     :registry (registry/map->RedisRegistry {:spec spec}))))
 
 
-(defn run [& [port]]
+(defn run [& [port spec]]
   (if @system (swap! system component/stop))
-  (reset! system (resolve-system {:port port}))
+  (reset! system (resolve-system {:port port, :spec spec}))
   (swap! system component/start))
 
 (defn -main [& [port]]
