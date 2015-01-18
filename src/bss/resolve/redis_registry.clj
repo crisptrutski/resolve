@@ -39,9 +39,11 @@
 (defn- update-cache [spec cache msg]
   (let [[type channel payload] msg]
     (when (= type "message")
-      (let [[path action endpoints] payload]
-        (let [f (if (= action :add) set/union set/difference)]
-          (swap! cache update-in path f endpoints))))))
+      (let [[path action endpoints] payload
+            f (if (= action :add) set/union set/difference)]
+        (swap! cache update-in path f endpoints)
+        ;; TODO: remove circular reference
+        (#'bss.resolve.registry/cleanup! cache path)))))
 
 (defn- create-pubsub-listener [spec cache]
   (r/with-new-pubsub-listener (:spec spec)

@@ -13,6 +13,14 @@
 (defn create-endpoint [host port]
   {:host host, :port port})
 
+(defn cleanup!
+  "Remove path if no endpoints left"
+  [cache [name ver :as path]]
+  (when (empty? (get-in @cache path))
+    (if (= 1 (count (get @cache name)))
+      (swap! cache dissoc name)
+      (swap! cache update-in [name] #(dissoc % ver)))))
+
 (defn- exists?*
   "Determines whether there are any matches, with match-all for missing params"
   ([registry service-name]
@@ -48,8 +56,7 @@
   (let [path [service-name (v/normalize version)]]
     (swap! cache update-in path
            #(disj % (create-endpoint host port)))
-    (if (empty? (get-in cache path))
-      (swap! cache update-in (take 1 path) #(dissoc % (last path))))))
+    (cleanup! cache path)))
 
 (defn- versions-for*
   "Determines set of versions available for given service-name"
