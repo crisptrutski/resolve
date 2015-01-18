@@ -21,7 +21,8 @@
   :uberjar-name "resolve.jar"
 
   :profiles {:dev {:repl-options {:init-ns bss.resolve.core}
-                   :dependencies [[org.clojure/tools.namespace "0.2.8"]]
+                   :dependencies [[org.clojure/tools.namespace "0.2.8"]
+                                  [peridot "0.3.1" :exclusions [clj-time]]]
                    :env {:is-dev true}}
 
              :prod {:jvm-opts ["-Xmx1g" "-server"] }

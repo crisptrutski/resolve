@@ -7,11 +7,11 @@
 
 (defonce system (atom nil))
 
-(defrecord Webserver [port server registry]
+(defrecord Webserver [port server ring-app]
   component/Lifecycle
   (start [component]
     (print "Starting web server on port" port "\n")
-    (let [server (run-jetty (web/create-handler registry)
+    (let [server (run-jetty (:handler ring-app)
                             {:port port, :join? false})]
       (assoc component :server server)))
 
@@ -20,13 +20,22 @@
     (when server (.stop server))
     (assoc component :server nil)))
 
+(defrecord RingApp [handler registry]
+  component/Lifecycle
+  (start [component]
+    (assoc component :handler (web/create-handler registry)))
+
+  (stop [component]
+    (assoc component :handler nil)))
+
 (defn new-webserver [port]
   (map->Webserver {:port (Integer. (or port (env :port) 10557))}))
 
 (defn resolve-system [config-options]
   (let [{:keys [port]} config-options]
     (component/system-map
-     :web (component/using (new-webserver port) [:registry])
+     :web (component/using (new-webserver port) [:ring-app])
+     :ring-app (component/using (map->RingApp {}) [:registry])
      :registry (registry/map->RedisRegistry {:spec nil}))))
 
 
