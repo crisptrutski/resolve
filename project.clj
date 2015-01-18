@@ -1,4 +1,4 @@
-(defproject bss/resolve "0.1.0-SNAPSHOT"
+(defproject bss/resolve "0.1.0"
   :description "Service registry and proxy"
   :url "https://github.com/organosoft/resolve"
   :license {:name "Eclipse Public License"
