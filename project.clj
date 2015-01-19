@@ -1,4 +1,4 @@
-(defproject bss/resolve "0.1.0"
+(defproject bss/resolve "0.1.1-SNAPSHOT"
   :description "Service registry and proxy"
   :url "https://github.com/organosoft/resolve"
   :dependencies [[org.clojure/clojure "1.6.0"]
