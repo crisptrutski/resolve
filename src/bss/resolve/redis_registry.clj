@@ -1,5 +1,6 @@
 (ns bss.resolve.redis-registry
-  (:require [taoensso.carmine :as r]
+  (:require [bss.resolve.registry :as registry]
+            [taoensso.carmine :as r]
             [clojure.set :as set]
             [com.stuartsierra.component :as component]))
 
@@ -43,7 +44,7 @@
             f (if (= action :add) set/union set/difference)]
         (swap! cache update-in path f endpoints)
         ;; TODO: remove circular reference
-        (#'bss.resolve.registry/cleanup! cache path)))))
+        (registry/cleanup! cache path)))))
 
 (defn- create-pubsub-listener [spec cache]
   (r/with-new-pubsub-listener (:spec spec)

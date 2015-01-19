@@ -1,6 +1,5 @@
 (ns bss.resolve.registry
   (:require [bss.resolve.versions :as v]
-            [bss.resolve.redis-registry :as rr]
             [com.stuartsierra.component :as component]))
 
 (defrecord Registry [cache]
