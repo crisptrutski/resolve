@@ -26,13 +26,13 @@
 (def normalize (comp print-version expand-version))
 
 (defn bump-expanded [[maj min patch pre :as expanded]]
-  (cond (not (empty? pre))
+  (cond (seq pre)
         [maj min patch ""]
 
-        (> maj 0)
+        (pos? maj)
         [(inc maj) 0 0 ""]
 
-        (> min 0)
+        (pos? min)
         [0 (inc min) 0 ""]
 
         :else
@@ -52,8 +52,8 @@
       ;; sort snapshots alphabetically
       (let [a (snap- a)
             b (snap- b)]
-        (cond (and (empty? a) (not (empty? b))) 1
-              (and (empty? b) (not (empty? a))) -1
+        (cond (and (empty? a) (seq b)) 1
+              (and (empty? b) (seq a)) -1
               :else (compare a b))))))
 
 (defn- sort-versions [versions] (sort compare- versions))

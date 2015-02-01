@@ -17,7 +17,7 @@
       (assoc component :server server)))
 
   (stop [component]
-    (print "Stopping web server on (port" port "\n")
+    (print "Stopping web server on port" port "\n")
     (when server (.stop server))
     (assoc component :server nil)))
 

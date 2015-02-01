@@ -51,7 +51,7 @@
       (let [missing-keys (remove #(get config %) [:service-name :port :version])]
         (println "Registering service")
         (if (seq missing-keys)
-          (throw (RuntimeException. (str "Missing required keys: " (into [] missing-keys))))
+          (throw (RuntimeException. (str "Missing required keys: " (vec missing-keys))))
           (reg/register registry
                         service-name
                         version
