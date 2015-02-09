@@ -1,6 +1,8 @@
 (defproject bss/resolve "0.1.1-SNAPSHOT"
   :description "Service registry and proxy"
   :url "https://github.com/organosoft/resolve"
+  :repositories [["braai"   {:url "http://archiva.braaisoft.com/repository/snapshots/"}]
+                 ["releases"{:url "http://archiva.braaisoft.com/repository/internal/"}]]
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [com.stuartsierra/component "0.2.2"]
                  [com.taoensso/carmine "2.9.0"]
