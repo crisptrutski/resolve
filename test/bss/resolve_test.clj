@@ -61,3 +61,34 @@
       (is (= {:service-name "self", :end-points [{:host "devbox2", :port "9001"}]}
              ;; OH NO, CARET NOT LEGAL
              (<-edn (request s "/lookup/self/_0.1.2")))))))
+
+
+(deftest test-bad-request
+  (testing "checks appropriate parameters"
+    (setup!)
+    (let [s (session app)]
+      #_(is (= 400
+             (-> (request s "/registry/"
+                          :request-method :put
+                          :params {:version "0.2.3"
+                                   ,:host    "devbox3"
+                                   :port    9062})
+                 identity)))
+      (is (= 400
+             (-> (request s "/registry/thing"
+                          :request-method :put
+                          :params {:host    "devbox3"
+                                   :port    9062})
+                 :response :status)))
+      (is (= 400
+             (-> (request s "/registry/thing"
+                          :request-method :put
+                          :params {:version "0.2.1"
+                                   :port    9062})
+                 :response :status)))
+      (is (= 400
+             (-> (request s "/registry/thing"
+                          :request-method :put
+                          :params {:version "0.2.1"
+                                   :host    "devbox3"})
+                 :response :status))))))

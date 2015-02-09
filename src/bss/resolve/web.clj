@@ -23,19 +23,21 @@
      (PUT "/registry/:service-name" {:keys [params] :as req}
        (let [service-name (get-in req [:route-params :service-name])
              {:keys [version host port]} params]
-         (assert (every? identity [service-name version host port]))
-         (let [exists (exists? service-name version host port)]
-           (when-not exists
-             (register service-name version host port))
-           (->edn {:success true, :existed exists}))))
+         (if-not (every? identity [service-name version host port])
+           {:status 400, :body (->edn {:message "valid service-name, version, host and port parameters required"})}
+           (let [exists (exists? service-name version host port)]
+             (when-not exists
+               (register service-name version host port))
+             (->edn {:success true, :existed exists})))))
 
      (DELETE "/registry/:service-name" {:keys [params]}
        (let [{:keys [version host port service-name]} params]
-         (assert (every? identity [version host port]))
-         (let [exists (exists? service-name version host port)]
-           (when exists
-             (unregister service-name version host port))
-           (->edn {:success true, :existed exists}))))
+         (if-not (every? identity [service-name version host port])
+           {:status 400, :body (->edn {:message "valid service-name, version, host and port parameters required"})}
+           (let [exists (exists? service-name version host port)]
+             (when exists
+               (unregister service-name version host port))
+             (->edn {:success true, :existed exists})))))
 
      (GET "/registry/:service-name/versions" [service-name]
        (->edn {:service-name service-name
