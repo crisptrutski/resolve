@@ -14,6 +14,10 @@ Basic service registry and dynamic proxy, loosely inspired by https://github.com
 
 ## Usage
 
+**DON'T USE**
+
+To play:
+
 repl: `(require '[bss.resolve.core :as resolve]) (resolve/run <port> <redis-options>)`
 
 source: `lein run -m bss.resolve.core <port> <redis-options>`
